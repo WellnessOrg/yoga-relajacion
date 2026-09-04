@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellness Club | Yoga Relajación — Reserva tu Clase</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+  :root {
+    --bg-color: #F6F0E7;
+    --surface: #FFFFFF;
+    --surface-alt: #FBF5EC;
+    --text-main: #382A20;
+    --text-muted: #8C7A69;
+    --accent: #9C5B34;
+    --accent-hover: #79451F;
+    --accent-light: #EFE0CD;
+    --accent-wash: #F5EADA;
+    --line: #E7D8C4;
+    --gold: #B58A4A;
+    --glass-bg: rgba(251, 245, 236, 0.82);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --shadow-sm: 0 6px 18px rgba(56, 42, 32, 0.07);
+    --shadow-lg: 0 26px 54px rgba(56, 42, 32, 0.12);
+    --radius: 26px;
+    --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Montserrat', sans-serif; background: var(--bg-color); color: var(--text-main);
+    overflow-x: hidden;
+    background-image: radial-gradient(circle at 10% 0%, rgba(156,91,52,0.06), transparent 45%),
+                       radial-gradient(circle at 92% 6%, rgba(181,138,74,0.07), transparent 42%);
+  }
+  h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--glass-bg); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border); padding: 16px 44px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+  .logo-icon {
+    width: 38px; height: 38px; background: var(--accent); color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700;
+    box-shadow: 0 4px 12px rgba(156, 91, 52, 0.32);
+  }
+  .logo-text { font-size: 16px; font-weight: 600; letter-spacing: 0.3px; }
+
+  .nav-links { display: flex; gap: 4px; align-items: center; }
+  .nav-links a {
+    text-decoration: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 500;
+    padding: 9px 18px; border-radius: 100px; transition: var(--transition);
+  }
+  .nav-links a:hover { color: var(--text-main); background: var(--accent-light); }
+  .nav-links a.active { color: white; background: var(--accent); }
+
+  .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
+  .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--text-main); margin: 5px 0; border-radius: 2px; }
+
+  /* HERO */
+  .main-container { max-width: 980px; margin: 0 auto; padding: 128px 24px 80px; }
+
+  .class-hero-card {
+    border-radius: var(--radius); overflow: hidden; margin-bottom: 44px;
+    box-shadow: var(--shadow-lg); position: relative;
+    display: grid; grid-template-columns: 1.05fr 0.95fr; min-height: 340px;
+    background: var(--surface);
+  }
+  .class-info-text { padding: 46px 44px; display: flex; flex-direction: column; justify-content: center; }
+  .badge-level {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.8rem; font-weight: 500; color: var(--accent-hover);
+    margin-bottom: 16px;
+  }
+  .badge-level::before { content: ''; width: 18px; height: 1px; background: var(--gold); display: inline-block; }
+  .class-info-text h1 { font-size: clamp(2.2rem, 3.6vw, 2.9rem); margin-bottom: 16px; line-height: 1.08; font-weight: 600; }
+  .class-info-text p { font-size: 0.96rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; max-width: 400px; }
+
+  .class-meta { display: flex; gap: 26px; }
+  .meta-item { border-left: 2px solid var(--line); padding-left: 12px; }
+  .meta-item .num { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--accent); display: block; line-height: 1.1; white-space: nowrap; }
+  .meta-item .label { font-size: 0.68rem; color: var(--text-muted); margin-top: 3px; display: block; }
+
+  .class-img-box { position: relative; overflow: hidden; }
+  .class-img-box img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.85) sepia(0.12); }
+  .class-img-box::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(105deg, rgba(56,42,32,0.28) 0%, rgba(156,91,52,0.12) 55%, transparent 100%);
+  }
+
+  /* BOOKING SECTION */
+  .booking-section {
+    background: var(--surface); border-radius: var(--radius); padding: 46px;
+    box-shadow: var(--shadow-lg); border: 1px solid var(--line);
+  }
+  .section-title-main { font-size: 1.7rem; margin-bottom: 6px; text-align: center; }
+  .section-subtitle-main { color: var(--text-muted); font-size: 0.88rem; text-align: center; margin-bottom: 12px; }
+
+  .progress-track { display: flex; align-items: center; gap: 6px; margin: 0 auto 36px; max-width: 340px; }
+  .progress-seg { flex: 1; height: 3px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .progress-seg::after {
+    content: ''; display: block; height: 100%; width: 0%; background: var(--accent);
+    transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .progress-seg.done::after { width: 100%; }
+
+  .step-block { margin-bottom: 32px; }
+  .step-block:last-of-type { margin-bottom: 0; }
+  .step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--accent-light); color: var(--accent-hover);
+    font-size: 0.72rem; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: var(--transition);
+  }
+  .step-block.complete .step-num { background: var(--accent); color: white; }
+  .step-title-custom { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+  .step-flag { margin-left: auto; font-size: 0.76rem; color: var(--accent); font-weight: 600; opacity: 0; transition: var(--transition); text-align: right; }
+  .step-block.complete .step-flag { opacity: 1; }
+
+  /* CALENDARIO */
+  .calendar-box { background: var(--surface-alt); border: 1px solid var(--line); border-radius: 18px; padding: 20px; }
+  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+  .cal-header span { font-weight: 600; font-family: 'Playfair Display', serif; font-size: 1.08rem; text-transform: capitalize; }
+  .cal-header span em { font-style: italic; color: var(--accent); }
+  .cal-nav-btn {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 50%;
+    width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-main); transition: var(--transition); font-size: 0.9rem;
+  }
+  .cal-nav-btn:hover:not(:disabled) { background: var(--accent); color: white; border-color: var(--accent); }
+  .cal-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
+  .cal-day-name { font-size: 0.66rem; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; letter-spacing: 0.4px; }
+  .cal-day {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center; position: relative;
+    font-size: 0.85rem; border-radius: 10px; transition: var(--transition);
+    background: var(--surface); border: 1px solid var(--line); color: var(--text-muted); cursor: default;
+  }
+  .cal-day.blank { visibility: hidden; }
+  .cal-day.available { cursor: pointer; color: var(--text-main); font-weight: 500; }
+  .cal-day.available:hover { border-color: var(--accent); background: var(--accent-light); }
+  .cal-day.disabled { opacity: 0.25; border-color: transparent; background: transparent; }
+  .cal-day.selected { background: var(--accent); color: white; border-color: var(--accent); font-weight: 600; box-shadow: 0 6px 14px rgba(156,91,52,0.3); }
+  .cal-day.today.available::after {
+    content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; border-radius: 50%; background: var(--gold);
+  }
+  .cal-day.selected::after { display: none; }
+  .cal-legend { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 0.72rem; color: var(--text-muted); }
+  .cal-legend .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+
+  /* PICKERS */
+  .picker-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .picker-option, .mat-spot {
+    position: relative; background: var(--surface-alt); border: 1.5px solid var(--line); border-radius: 14px;
+    padding: 15px 10px; text-align: center; cursor: pointer; transition: var(--transition);
+  }
+  .picker-option:hover, .mat-spot:hover { border-color: var(--accent); background: var(--accent-light); }
+  .picker-option.selected, .mat-spot.selected {
+    background: var(--accent); border-color: var(--accent); color: white;
+    box-shadow: 0 8px 18px rgba(156, 91, 52, 0.28);
+  }
+  .picker-option.selected .opt-sub, .mat-spot.selected .mat-sub { color: rgba(255,255,255,0.78); }
+  .opt-title, .mat-name { font-weight: 600; font-size: 0.94rem; display: block; }
+  .opt-sub, .mat-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; display: block; transition: var(--transition); }
+
+  .check-badge {
+    position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%;
+    background: white; color: var(--accent); display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; opacity: 0; transform: scale(0.5); transition: var(--transition);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .picker-option.selected .check-badge, .mat-spot.selected .check-badge { opacity: 1; transform: scale(1); }
+  .picker-empty { grid-column: 1 / -1; font-size: 0.85rem; color: var(--text-muted); padding: 20px 0; text-align: center; border: 1px dashed var(--line); border-radius: 14px; }
+
+  /* MAPA DE MATS */
+  .room-layout { display: flex; flex-direction: column; gap: 10px; }
+  .room-instructor {
+    text-align: center; background: var(--accent-wash); padding: 7px; border-radius: 10px;
+    font-size: 0.68rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1.2px;
+  }
+  .mat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .mat-spot svg { width: 20px; height: 20px; margin: 0 auto 5px; display: block; }
+  .mat-spot svg path, .mat-spot svg circle { stroke: var(--accent); transition: var(--transition); }
+  .mat-spot.selected svg path, .mat-spot.selected svg circle { stroke: white; }
+
+  /* BOTÓN */
+  .btn-primary {
+    width: 100%; padding: 16px; background: var(--accent); color: white; border: none;
+    border-radius: 14px; font-size: 0.98rem; font-weight: 600; cursor: pointer; transition: var(--transition);
+    box-shadow: 0 8px 22px rgba(156, 91, 52, 0.28); margin-top: 28px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); }
+  .btn-primary:disabled { background: #EDE3D6; color: #B7A48D; cursor: not-allowed; box-shadow: none; }
+  .btn-primary.shake { animation: shake 0.4s; }
+  @keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+  .form-note { font-size: 0.76rem; color: var(--text-muted); text-align: center; margin-top: 14px; }
+
+  /* TICKET */
+  .success-wrap { animation: riseIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); text-align: center; }
+  @keyframes riseIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .success-check {
+    width: 62px; height: 62px; border-radius: 50%; background: var(--accent-light); color: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 16px;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+  }
+  @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+  .success-title { font-size: 1.7rem; margin-bottom: 6px; }
+  .success-copy { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 26px; }
+
+  .ticket {
+    background: var(--surface-alt); border-radius: 18px; margin-bottom: 22px;
+    box-shadow: var(--shadow-lg); overflow: hidden; border: 1px solid var(--line); text-align: left;
+  }
+  .ticket-top { padding: 24px 26px 18px; }
+  .ticket-top-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; gap: 12px; }
+  .ticket-class-label { font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.6px; display: block; margin-bottom: 4px; }
+  .ticket-class-name { font-size: 1.25rem; font-weight: 600; font-family: 'Playfair Display', serif; }
+  .ticket-code { font-size: 0.7rem; color: var(--text-muted); text-align: right; flex-shrink: 0; }
+  .ticket-code b { display: block; color: var(--text-main); font-size: 0.92rem; letter-spacing: 1px; font-family: 'Playfair Display', serif; }
+  .ticket-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .success-row { display: block; margin-bottom: 0; font-size: 0.9rem; }
+  .success-label { font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.3px; display: block; margin-bottom: 3px; }
+  .success-value { font-weight: 600; font-size: 0.95rem; }
+  .ticket-perf { position: relative; height: 0; border-top: 2px dashed var(--line); }
+  .ticket-perf::before, .ticket-perf::after {
+    content: ''; position: absolute; top: -10px; width: 20px; height: 20px; background: var(--bg-color); border-radius: 50%;
+  }
+  .ticket-perf::before { left: -10px; }
+  .ticket-perf::after { right: -10px; }
+  .ticket-bottom { padding: 16px 26px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .ticket-bottom-note { font-size: 0.76rem; color: var(--text-muted); }
+  .ticket-status { font-size: 0.7rem; font-weight: 600; color: var(--accent); background: var(--accent-light); padding: 5px 12px; border-radius: 100px; flex-shrink: 0; }
+
+  .btn-secondary {
+    width: 100%; padding: 14px; background: transparent; color: var(--text-main); border: 1.5px solid var(--line);
+    border-radius: 14px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition);
+  }
+  .btn-secondary:hover { border-color: var(--accent); background: var(--accent-light); }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 860px) {
+    .class-hero-card { grid-template-columns: 1fr; }
+    .class-img-box { height: 220px; order: -1; }
+    .class-info-text { padding: 36px 30px; }
+  }
+  @media (max-width: 640px) {
+    nav { padding: 14px 20px; }
+    .nav-links { position: fixed; top: 68px; left: 16px; right: 16px; background: var(--surface);
+      border-radius: 18px; flex-direction: column; align-items: stretch; padding: 10px; box-shadow: var(--shadow-lg);
+      display: none; }
+    .nav-links.open { display: flex; }
+    .nav-links a { text-align: center; }
+    .nav-toggle { display: block; }
+    .main-container { padding: 108px 16px 60px; }
+    .booking-section { padding: 26px 20px; }
+    .ticket-rows { grid-template-columns: 1fr; }
+    .step-head { flex-wrap: wrap; }
+    .step-flag { flex-basis: 100%; text-align: left; margin-left: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">W</div>
+    <span class="logo-text">Wellness Club</span>
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="cafeteria.html">Cafetería</a>
+    <a href="yoga.html" class="active">Yoga</a>
+    <a href="estetica.html">Estética</a>
+  </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" type="button">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="main-container">
+
+  <div class="class-hero-card">
+    <div class="class-info-text">
+      <span class="badge-level">Todo público · 75 min</span>
+      <h1 class="serif">Yoga Relajación</h1>
+      <p>Una práctica enfocada en la liberación profunda de tensiones físicas y mentales mediante posturas restaurativas, pranayama y meditación guiada.</p>
+      <div class="class-meta">
+        <div class="meta-item"><span class="num">9</span><span class="label">Cupos por clase</span></div>
+        <div class="meta-item"><span class="num">Lun · Mié · Vie</span><span class="label">Días de clase</span></div>
+      </div>
+    </div>
+    <div class="class-img-box">
+      <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=800&auto=format&fit=crop" alt="Yoga Relajación">
+    </div>
+  </div>
+
+  <div class="booking-section">
+
+    <div id="bookingForm">
+      <h2 class="serif section-title-main">Elegí en tres pasos</h2>
+      <p class="section-subtitle-main">Seleccioná tu fecha, horario y espacio ideal en la sala</p>
+
+      <div class="progress-track" id="progressTrack">
+        <div class="progress-seg" data-seg="1"></div>
+        <div class="progress-seg" data-seg="2"></div>
+        <div class="progress-seg" data-seg="3"></div>
+      </div>
+
+      <div class="step-block" id="stepDate">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <span class="step-title-custom">Elegí la fecha</span>
+          <span class="step-flag" id="dateFlag"></span>
+        </div>
+        <div class="calendar-box">
+          <div class="cal-header">
+            <button class="cal-nav-btn" id="calPrev" type="button" aria-label="Mes anterior">‹</button>
+            <span id="calMonthYear"></span>
+            <button class="cal-nav-btn" id="calNext" type="button" aria-label="Mes siguiente">›</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-legend"><span class="dot"></span> Hoy · las clases son lunes, miércoles y viernes</div>
+        </div>
+      </div>
+
+      <div class="step-block" id="stepTime">
+        <div class="step-head">
+          <div class="step-num">2</div>
+          <span class="step-title-custom">Elegí el horario</span>
+          <span class="step-flag" id="timeFlag"></span>
+        </div>
+        <div class="picker-grid" id="timePicker">
+          <div class="picker-empty">Primero elegí una fecha</div>
+        </div>
+      </div>
+
+      <div class="step-block" id="stepMat">
+        <div class="step-head">
+          <div class="step-num">3</div>
+          <span class="step-title-custom">Elegí tu mat</span>
+          <span class="step-flag" id="matFlag"></span>
+        </div>
+        <div class="room-layout">
+          <div class="room-instructor">▲ Zona del instructor ▲</div>
+          <div class="mat-row" id="matPicker">
+            <div class="mat-spot" data-value="Frontal">
+              <span class="check-badge">✓</span>
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2.4"/><path d="M12 9v5M12 14l-5 6M12 14l5 6M7 12l5-3 5 3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="mat-name">Frontal</span>
+              <span class="mat-sub">2 lugares</span>
+            </div>
+            <div class="mat-spot" data-value="Centro">
+              <span class="check-badge">✓</span>
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2.4"/><path d="M12 9v6M9 12h6M12 15l-4 5M12 15l4 5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="mat-name">Centro</span>
+              <span class="mat-sub">4 lugares</span>
+            </div>
+            <div class="mat-spot" data-value="Ventanal">
+              <span class="check-badge">✓</span>
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 4l2.5 5 5.5.8-4 3.9.9 5.5L12 16.7 7.1 19.2l.9-5.5-4-3.9 5.5-.8L12 4Z" stroke-width="1.3" stroke-linejoin="round"/></svg>
+              <span class="mat-name">Ventanal</span>
+              <span class="mat-sub">1 lugar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btnConfirmar" type="button" disabled>Elegí fecha, horario y mat</button>
+      <p class="form-note">Podés cancelar hasta 2 horas antes de la clase sin cargo.</p>
+    </div>
+
+    <div id="successTicket" class="success-wrap hidden">
+      <div class="success-check">✓</div>
+      <h3 class="serif success-title">Reserva confirmada</h3>
+      <p class="success-copy">Prepárate para conectar con tu paz interior. ¡Namasté!</p>
+
+      <div class="ticket">
+        <div class="ticket-top">
+          <div class="ticket-top-head">
+            <div>
+              <span class="ticket-class-label">Wellness Club · Yoga</span>
+              <span class="ticket-class-name">Yoga Relajación</span>
+            </div>
+            <div class="ticket-code">
+              Código de reserva
+              <b id="ticketCode">—</b>
+            </div>
+          </div>
+          <div class="ticket-rows">
+            <div class="success-row"><span class="success-label">Fecha</span><span class="success-value" id="resumenFecha">—</span></div>
+            <div class="success-row"><span class="success-label">Horario</span><span class="success-value" id="resumenHora">—</span></div>
+            <div class="success-row"><span class="success-label">Ubicación</span><span class="success-value" id="resumenMat">—</span></div>
+            <div class="success-row"><span class="success-label">Duración</span><span class="success-value">75 min</span></div>
+          </div>
+        </div>
+        <div class="ticket-perf"></div>
+        <div class="ticket-bottom">
+          <span class="ticket-bottom-note">Presentá este código en recepción</span>
+          <span class="ticket-status">Confirmada</span>
+        </div>
+      </div>
+
+      <button class="btn-secondary" id="btnReiniciar" type="button">Reservar otra clase</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const CLASS_WEEKDAYS = [1, 3, 5]; // lunes, miércoles, viernes
+  const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const WEEKDAY_NAMES = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const TIME_SLOTS = [
+    { value: '10:30 hs', label: 'Mañana' },
+    { value: '17:00 hs', label: 'Atardecer' },
+    { value: '19:30 hs', label: 'Nocturna' }
+  ];
+
+  const state = { date: null, dateLabel: null, time: null, mat: null };
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const maxDate = new Date(today); maxDate.setDate(maxDate.getDate() + 42); // ventana de reserva: 6 semanas
+
+  let mesActivo = today.getMonth();
+  let anioActivo = today.getFullYear();
+
+  const calGrid = document.getElementById('calGrid');
+  const calMonthYear = document.getElementById('calMonthYear');
+  const calPrev = document.getElementById('calPrev');
+  const calNext = document.getElementById('calNext');
+  const timePicker = document.getElementById('timePicker');
+  const btnConfirmar = document.getElementById('btnConfirmar');
+  const progressSegs = document.querySelectorAll('.progress-seg');
+
+  function pad(n) { return n < 10 ? '0' + n : n; }
+  function dateKey(d) { return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
+  function hashSpots(seed, max) {
+    let h = 0;
+    for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+    return h % (max + 1);
+  }
+
+  function renderizarCalendario() {
+    calMonthYear.innerHTML = MONTHS[mesActivo] + ' <em>' + anioActivo + '</em>';
+
+    let html = '<div class="cal-day-name">L</div><div class="cal-day-name">M</div><div class="cal-day-name">M</div><div class="cal-day-name">J</div><div class="cal-day-name">V</div><div class="cal-day-name">S</div><div class="cal-day-name">D</div>';
+
+    let primerDiaIndex = new Date(anioActivo, mesActivo, 1).getDay();
+    primerDiaIndex = (primerDiaIndex === 0) ? 6 : primerDiaIndex - 1;
+
+    let totalDiasMes = new Date(anioActivo, mesActivo + 1, 0).getDate();
+
+    for (let i = 0; i < primerDiaIndex; i++) {
+      html += '<div class="cal-day blank"></div>';
+    }
+
+    for (let dia = 1; dia <= totalDiasMes; dia++) {
+      const d = new Date(anioActivo, mesActivo, dia);
+      const key = dateKey(d);
+      const isClassDay = CLASS_WEEKDAYS.includes(d.getDay());
+      const inRange = d >= today && d <= maxDate;
+      const isToday = key === dateKey(today);
+      const isSelected = state.date && dateKey(state.date) === key;
+
+      let classes = 'cal-day';
+      if (isToday) classes += ' today';
+      if (isClassDay && inRange) {
+        classes += ' available';
+        if (isSelected) classes += ' selected';
+        html += `<div class="${classes}" data-key="${key}" onclick="elegirFecha('${key}', ${dia}, ${d.getDay()})">${dia}</div>`;
+      } else {
+        classes += ' disabled';
+        html += `<div class="${classes}">${dia}</div>`;
+      }
+    }
+
+    calGrid.innerHTML = html;
+    calPrev.disabled = (anioActivo === today.getFullYear() && mesActivo === today.getMonth());
+    calNext.disabled = (anioActivo === maxDate.getFullYear() && mesActivo === maxDate.getMonth());
+  }
+
+  function cambiarMes(direccion) {
+    mesActivo += direccion;
+    if (mesActivo > 11) { mesActivo = 0; anioActivo++; }
+    else if (mesActivo < 0) { mesActivo = 11; anioActivo--; }
+    renderizarCalendario();
+  }
+  calPrev.addEventListener('click', () => cambiarMes(-1));
+  calNext.addEventListener('click', () => cambiarMes(1));
+
+  function elegirFecha(key, dia, weekday) {
+    const [y, m, d] = key.split('-').map(Number);
+    const fecha = new Date(y, m - 1, d);
+    state.date = fecha;
+    const wname = WEEKDAY_NAMES[weekday];
+    state.dateLabel = wname.charAt(0).toUpperCase() + wname.slice(1) + ' ' + dia + ' de ' + MONTHS[m - 1];
+
+    document.getElementById('dateFlag').textContent = state.dateLabel;
+    document.getElementById('stepDate').classList.add('complete');
+
+    state.time = null;
+    document.getElementById('timeFlag').textContent = '';
+    document.getElementById('stepTime').classList.remove('complete');
+
+    renderizarCalendario();
+    renderizarHorarios();
+    actualizarProgreso();
+    verificarHabilitacion();
+  }
+
+  function renderizarHorarios() {
+    timePicker.innerHTML = '';
+    if (!state.date) {
+      timePicker.innerHTML = '<div class="picker-empty">Primero elegí una fecha</div>';
+      return;
+    }
+    TIME_SLOTS.forEach(slot => {
+      const seed = dateKey(state.date) + slot.value;
+      const spots = 1 + hashSpots(seed, 4);
+      const opt = document.createElement('div');
+      opt.className = 'picker-option';
+      opt.innerHTML = `<span class="check-badge">✓</span><span class="opt-title">${slot.value}</span><span class="opt-sub">${slot.label} · ${spots}${spots === 1 ? ' lugar' : ' lugares'}</span>`;
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('#timePicker .picker-option').forEach(el => el.classList.remove('selected'));
+        opt.classList.add('selected');
+        state.time = slot.value;
+        document.getElementById('timeFlag').textContent = slot.value;
+        document.getElementById('stepTime').classList.add('complete');
+        actualizarProgreso();
+        verificarHabilitacion();
+      });
+      timePicker.appendChild(opt);
+    });
+  }
+
+  document.querySelectorAll('#matPicker .mat-spot').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('#matPicker .mat-spot').forEach(el => el.classList.remove('selected'));
+      opt.classList.add('selected');
+      state.mat = opt.dataset.value;
+      document.getElementById('matFlag').textContent = state.mat;
+      document.getElementById('stepMat').classList.add('complete');
+      actualizarProgreso();
+      verificarHabilitacion();
+    });
+  });
+
+  function actualizarProgreso() {
+    const filled = [state.date, state.time, state.mat].filter(Boolean).length;
+    progressSegs.forEach((seg, i) => seg.classList.toggle('done', i < filled));
+  }
+
+  function verificarHabilitacion() {
+    const missing = [];
+    if (!state.date) missing.push('fecha');
+    if (!state.time) missing.push('horario');
+    if (!state.mat) missing.push('mat');
+
+    if (missing.length === 0) {
+      btnConfirmar.disabled = false;
+      btnConfirmar.textContent = 'Confirmar mi reserva';
+    } else {
+      btnConfirmar.disabled = true;
+      btnConfirmar.textContent = 'Elegí ' + missing.join(', ');
+    }
+  }
+
+  function generarCodigo() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = 'YR-';
+    for (let i = 0; i < 5; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return code;
+  }
+
+  btnConfirmar.addEventListener('click', () => {
+    if (btnConfirmar.disabled) {
+      btnConfirmar.classList.remove('shake');
+      void btnConfirmar.offsetWidth;
+      btnConfirmar.classList.add('shake');
+      return;
+    }
+    document.getElementById('resumenFecha').textContent = state.dateLabel;
+    document.getElementById('resumenHora').textContent = state.time;
+    document.getElementById('resumenMat').textContent = state.mat;
+    document.getElementById('ticketCode').textContent = generarCodigo();
+
+    document.getElementById('bookingForm').classList.add('hidden');
+    document.getElementById('successTicket').classList.remove('hidden');
+  });
+
+  document.getElementById('btnReiniciar').addEventListener('click', () => {
+    state.date = null; state.dateLabel = null; state.time = null; state.mat = null;
+    document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.step-block').forEach(el => el.classList.remove('complete'));
+    document.querySelectorAll('.step-flag').forEach(el => el.textContent = '');
+    mesActivo = today.getMonth(); anioActivo = today.getFullYear();
+
+    renderizarCalendario();
+    renderizarHorarios();
+    actualizarProgreso();
+    verificarHabilitacion();
+
+    document.getElementById('successTicket').classList.add('hidden');
+    document.getElementById('bookingForm').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('navToggle').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+
+  renderizarCalendario();
+  renderizarHorarios();
+  verificarHabilitacion();
+</script>
+</body>
+</html>
